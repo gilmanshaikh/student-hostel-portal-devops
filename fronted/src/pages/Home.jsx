@@ -28,7 +28,7 @@ const Home = () => {
     'IIIT Hyderabad',
     'DTU Delhi',
     'Anna University',
-    'Pune University'
+    'PCU University'
   ];
 
   return (
