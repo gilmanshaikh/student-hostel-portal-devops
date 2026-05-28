@@ -1,0 +1,29 @@
+name: Full-Stack Docker Build Validation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Validate Docker Compose Configuration
+      run: docker compose config
+
+    - name: Build Backend Image (Test)
+      run: |
+        docker build -t hostelhub-backend:test ./backend
+
+    - name: Build Frontend Image (Test)
+      run: |
+        docker build -t hostelhub-frontend:test ./fronted
