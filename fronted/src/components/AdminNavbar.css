@@ -30,6 +30,16 @@
   letter-spacing: 0.5px;
 }
 
+/* Automated CSS Injection: This attaches the tag directly to your title text */
+.admin-navbar-title h2::after {
+  content: " (v1.0.0 - CI Verified)";
+  color: #4B6BFB; /* Matching blue theme color */
+  font-size: 13px;
+  font-weight: 500;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 .admin-nav-toggle {
   display: none;
   background: rgba(255, 255, 255, 0.1);
