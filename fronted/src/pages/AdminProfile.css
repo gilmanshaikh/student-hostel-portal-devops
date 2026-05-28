@@ -1,0 +1,5 @@
+@import './StudentProfile.css';
+
+.admin-avatar {
+  background: linear-gradient(135deg, #31C48D 0%, #28a574 100%) !important;
+}

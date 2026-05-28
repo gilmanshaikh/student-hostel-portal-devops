@@ -1,0 +1,28 @@
+# --- Stage 1: Build Dependencies ---
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copy dependency manifests
+COPY package*.json ./
+
+# Install packages firmly using npm ci for deterministic builds
+RUN npm ci
+
+# Copy backend source code
+COPY . .
+
+# --- Stage 2: Production Runtime ---
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy only node_modules and code from building stage
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/ . 
+
+EXPOSE 5000
+
+CMD ["node", "src/index.js"] 
+# Note: If your entry point file is named differently (like server.js or index.js in root), update it above.

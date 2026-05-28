@@ -1,0 +1,118 @@
+.auth-select-container {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #F5F7FE;
+}
+
+.auth-select-card {
+  background: #FFFFFF;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  max-width: 800px;
+  width: 100%;
+}
+
+.auth-select-card h2 {
+  text-align: center;
+  font-size: 32px;
+  color: #1B1F2A;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.auth-select-subtitle {
+  text-align: center;
+  color: #6C738A;
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  background: #F5F7FE;
+  padding: 4px;
+  border-radius: 6px;
+  margin-bottom: 40px;
+}
+
+.mode-toggle button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6C738A;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-toggle button.active {
+  background: #FFFFFF;
+  color: #4B6BFB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.role-selection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.role-option {
+  background: #F5F7FE;
+  padding: 32px 24px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.role-option:hover {
+  border-color: #4B6BFB;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(75, 107, 251, 0.15);
+}
+
+.role-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  color: #4B6BFB;
+}
+
+.role-option h3 {
+  font-size: 24px;
+  color: #1B1F2A;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.role-option p {
+  color: #6C738A;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.role-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4B6BFB;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-btn:hover {
+  background: #3C54C9;
+}
