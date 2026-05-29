@@ -1,44 +1,41 @@
+/* ==========================================================================
+   GLOBAL RESET & FONTS
+   ========================================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ==========================================================================
+   MAJOR CORE OVERHAUL: MIDNIGHT DARK MODE STRATEGY
+   ========================================================================== */
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  background: #F5F7FE;
-  min-height: 100vh;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #1B1F2A;
   font-size: 16px;
+  
+  /* FORCE TRANSFORMATION FROM LIGHT BLUE/GRAY TO PURE DEEP CHARCOAL */
+  background: #0b0f19 !important; 
+  color: #f1f5f9 !important;
+  min-height: 100vh;
 }
 
 .app {
   min-height: 100vh;
   width: 100%;
   padding-top: 80px; /* Account for fixed navbar */
-}
-
-.loading {
-  text-align: center;
-  padding: 32px;
-  font-size: 16px;
-  color: #6C738A;
-  background: #FFFFFF;
-  border-radius: 8px;
-  margin: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: #0b0f19 !important;
 }
 
 /* ==========================================================================
-   DEV EXERCISE: GLOBAL HERO SECTION & HOME PAGE COLOR OVERRIDE
+   TRANSFORMING ALL MAJOR BLOCKS & BANNERS (HERO, CONTAINER, CARDS)
    ========================================================================== */
 
-/* This targets the main structural classes commonly used in this project layout */
+/* 1. Smash the blue hero section and turn it into a sleek, premium dark void */
 .hero, 
 .hero-section, 
 .home-container, 
@@ -46,7 +43,44 @@ body {
 [class*="hero"],
 [class*="bg-blue"],
 [class*="bg-indigo"] {
-  background: #1e293b !important; /* <--- CHANGE THIS HEX CODE TO SWAP COLORS */
-  background-color: #1e293b !important;
+  background: #111827 !important; 
+  background-color: #111827 !important;
   background-image: none !important;
+  color: #ffffff !important;
+}
+
+/* 2. Force all standard white cards, hostel grid items, and sections to turn Dark Slate */
+div[class*="card"], 
+.card, 
+.hostel-card, 
+.dashboard-card, 
+section, 
+main,
+.loading {
+  background: #1f2937 !important;
+  background-color: #1f2937 !important;
+  color: #f8fafc !important;
+  border: 1px solid #374151 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 3. Adjust secondary typography so subtitles stay readable against the dark theme */
+p, span, label, .text-muted, color-gray {
+  color: #cbd5e1 !important;
+}
+
+h1, h2, h3, h4, h5, h6, strong {
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   LOADING STATES
+   ========================================================================== */
+.loading {
+  text-align: center;
+  padding: 32px;
+  font-size: 16px;
+  color: #94a3b8;
+  border-radius: 8px;
+  margin: 24px;
 }
