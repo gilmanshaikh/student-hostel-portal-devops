@@ -24,5 +24,5 @@ COPY --from=builder /app/ .
 
 EXPOSE 5000
 
-CMD ["node", "src/index.js"] 
+CMD ["node", "server.js"] 
 # Note: If your entry point file is named differently (like server.js or index.js in root), update it above.

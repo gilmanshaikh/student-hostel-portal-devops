@@ -12,4 +12,4 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/ . 
 
 EXPOSE 5000
-CMD ["node", "src/index.js"]
+CMD ["node", "server.js"]

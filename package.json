@@ -1,0 +1,12 @@
+{
+  "name": "hostel-hub-root",
+  "version": "1.0.0",
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "frontend": "cd fronted && npm run dev",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

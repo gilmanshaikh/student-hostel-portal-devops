@@ -19,14 +19,14 @@ services:
       context: ./fronted
       dockerfile: Dockerfile
     ports:
-      - "5173:80" # Maps local port 5173 to container Nginx port 80
+      - "5174:80" # Maps local port 5174 to container Nginx port 80
     depends_on:
       - backend
 
   mongodb:
     image: mongo:6.0
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
 
