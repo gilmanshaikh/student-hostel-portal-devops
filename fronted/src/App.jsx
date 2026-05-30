@@ -26,6 +26,19 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="app">
+          {/* DevOps Engineered Premium Release Banner */}
+          <div style={{ 
+            backgroundColor: '#10b981', 
+            color: '#ffffff', 
+            textAlign: 'center', 
+            padding: '8px 0', 
+            fontSize: '14px', 
+            fontWeight: 'bold',
+            letterSpacing: '0.5px'
+          }}>
+            🚀 HOSTELHUB PREMIUM PORTAL v1.1.0 • LIVE STAGING DEPLOYMENT
+          </div>
+
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
