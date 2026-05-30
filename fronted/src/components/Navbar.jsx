@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaClipboardList, FaPlusCircle, FaTasks, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaUser } from 'react-icons/fa';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 import './Navbar.css';
 
 const Navbar = () => {

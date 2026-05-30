@@ -2,7 +2,8 @@
   "name": "hostel-hub-root",
   "version": "1.0.0",
   "scripts": {
-    "backend": "cd backend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../fronted && npm install",
+    "backend": "cd backend && npm run dev",
     "frontend": "cd fronted && npm run dev",
     "start": "concurrently \"npm run backend\" \"npm run frontend\""
   },

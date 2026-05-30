@@ -23,6 +23,18 @@ A full-stack web application connecting students with hostel admins. Built with 
 **Backend:** Node.js, Express, MongoDB, Mongoose
 **Authentication:** JWT
 
+## Quick Start (Windows / macOS / Linux)
+
+1. **Install MongoDB** locally, or create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and put the connection string in `backend/.env` as `MONGODB_URI`.
+
+2. From the project root:
+```bash
+npm run install:all
+npm start
+```
+
+3. Open **http://localhost:5173** (frontend) — API runs on **http://localhost:5000**.
+
 ## Setup Instructions
 
 ### Backend Setup
