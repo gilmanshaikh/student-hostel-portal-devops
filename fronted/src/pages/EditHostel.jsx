@@ -1,13 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import {
+  getHostelById,
+  updateHostel,
+  deleteHostelImage,
+} from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import { FaTrash } from 'react-icons/fa';
 import './EditHostel.css';
 
 const EditHostel = () => {
   const { id } = useParams();
-  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -28,16 +31,21 @@ const EditHostel = () => {
 
   const fetchHostel = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/hostels/${id}`);
-      const data = await response.json();
-      
+      const result = await getHostelById(id);
+      if (result.error || !result.hostel) {
+        alert(result.error || 'Hostel not found');
+        navigate('/admin/my-hostels');
+        return;
+      }
+      const data = result.hostel;
+
       setFormData({
         name: data.name,
         address: data.address,
         description: data.description,
         price: data.price,
         capacity: data.capacity,
-        amenities: data.amenities.join(', ')
+        amenities: (data.amenities || []).join(', '),
       });
       setExistingImages(data.images || []);
       setLoading(false);
@@ -70,16 +78,9 @@ const EditHostel = () => {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/hostels/${id}/image`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ publicId })
-      });
+      const { ok } = await deleteHostelImage(id, publicId);
 
-      if (response.ok) {
+      if (ok) {
         setExistingImages(existingImages.filter(img => img.publicId !== publicId));
         alert('Image deleted successfully');
       }
@@ -105,19 +106,13 @@ const EditHostel = () => {
     });
 
     try {
-      const response = await fetch(`http://localhost:5000/api/hostels/${id}`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      });
+      const { ok, data: result } = await updateHostel(id, data);
 
-      if (response.ok) {
+      if (ok) {
         alert('Hostel updated successfully!');
         navigate('/admin/my-hostels');
       } else {
-        alert('Failed to update hostel');
+        alert(result?.message || 'Failed to update hostel');
       }
     } catch (error) {
       console.error('Error updating hostel:', error);

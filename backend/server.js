@@ -35,6 +35,13 @@ app.get('/', (req, res) => {
   });
 });
 
+// Unknown API routes — return JSON (not HTML "Cannot GET")
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    message: `API route not found: ${req.method} ${req.originalUrl}`,
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {

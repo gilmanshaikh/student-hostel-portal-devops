@@ -1,12 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { getAdminHostels, deleteHostel } from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import { FaEdit, FaTrash, FaEye, FaMapMarkerAlt, FaRupeeSign } from 'react-icons/fa';
 import './MyHostels.css';
 
 const MyHostels = () => {
-  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [hostels, setHostels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,10 +16,7 @@ const MyHostels = () => {
 
   const fetchHostels = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/hostels/admin/my-hostels', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await response.json();
+      const data = await getAdminHostels();
       setHostels(data);
       setLoading(false);
     } catch (error) {
@@ -33,12 +29,9 @@ const MyHostels = () => {
     if (!window.confirm('Are you sure you want to delete this hostel?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/hostels/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { ok } = await deleteHostel(id);
 
-      if (response.ok) {
+      if (ok) {
         setHostels(hostels.filter(h => h._id !== id));
         alert('Hostel deleted successfully');
       }

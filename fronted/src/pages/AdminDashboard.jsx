@@ -1,12 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { getAdminHostels, getAdminApplications } from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import { FaHome, FaTasks, FaCheckCircle, FaClock, FaTimesCircle } from 'react-icons/fa';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalHostels: 0,
@@ -24,17 +23,10 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [hostelsRes, applicationsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/hostels/admin/my-hostels', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        fetch('http://localhost:5000/api/applications/admin/applications', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+      const [hostels, applications] = await Promise.all([
+        getAdminHostels(),
+        getAdminApplications(),
       ]);
-
-      const hostels = await hostelsRes.json();
-      const applications = await applicationsRes.json();
 
       setStats({
         totalHostels: hostels.length,

@@ -1,0 +1,40 @@
+.not-found {
+  max-width: 520px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.not-found h1 {
+  color: #1b1f2a;
+  margin-bottom: 0.75rem;
+}
+
+.not-found p {
+  color: #6c738a;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.not-found-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.not-found-actions button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #4b6bfb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.not-found-actions button.secondary {
+  background: #fff;
+  color: #4b6bfb;
+  border: 2px solid #4b6bfb;
+}

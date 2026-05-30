@@ -3,32 +3,38 @@ title HostelHub
 cd /d "%~dp0"
 
 echo.
-echo  HostelHub - starting backend and frontend...
-echo  Do NOT open index.html in the browser. Use http://localhost:5173
+echo  HostelHub - Starting backend + frontend...
 echo.
 
 if not exist "backend\node_modules\" (
-  echo Installing backend dependencies...
-  cd backend
-  call npm install
-  cd ..
+  echo Installing backend...
+  pushd backend && call npm install && popd
 )
 
 if not exist "fronted\node_modules\" (
-  echo Installing frontend dependencies...
-  cd fronted
-  call npm install
-  cd ..
+  echo Installing frontend...
+  pushd fronted && call npm install && popd
 )
 
+echo Starting BACKEND on http://localhost:5000 ...
 start "HostelHub Backend" cmd /k "cd /d "%~dp0backend" && npm run dev"
-timeout /t 2 /nobreak >nul
+
+echo Waiting for backend...
+timeout /t 5 /nobreak >nul
+
+echo Starting FRONTEND on http://localhost:5173 ...
 start "HostelHub Frontend" cmd /k "cd /d "%~dp0fronted" && npm run dev"
-timeout /t 4 /nobreak >nul
+
+echo Waiting for frontend...
+timeout /t 6 /nobreak >nul
+
 start http://localhost:5173
 
 echo.
-echo  Open http://localhost:5173 if the browser did not open.
-echo  Keep both black terminal windows open while using the app.
+echo  Website:  http://localhost:5173
+echo  API:      http://localhost:5000
+echo.
+echo  Keep BOTH terminal windows open.
+echo  If you see "Connection failed", backend or frontend is not running.
 echo.
 pause

@@ -19,6 +19,7 @@ import AdminProfile from './pages/AdminProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import MyHostels from './pages/MyHostels';
 import EditHostel from './pages/EditHostel';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 function App() {
@@ -26,19 +27,6 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="app">
-          {/* DevOps Engineered Premium Release Banner */}
-          <div style={{ 
-            backgroundColor: '#10b981', 
-            color: '#ffffff', 
-            textAlign: 'center', 
-            padding: '8px 0', 
-            fontSize: '14px', 
-            fontWeight: 'bold',
-            letterSpacing: '0.5px'
-          }}>
-            🚀 HOSTELHUB PREMIUM PORTAL v1.1.0 • LIVE STAGING DEPLOYMENT
-          </div>
-
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -59,6 +47,7 @@ function App() {
             <Route path="/admin/edit-hostel/:id" element={<EditHostel />} />
             <Route path="/admin/applications" element={<AdminApplications />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </div>

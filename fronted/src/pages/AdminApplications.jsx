@@ -1,13 +1,17 @@
-import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { getAdminApplications, updateApplicationStatus, deleteApplication } from '../services/api';
+import { useState, useEffect } from 'react';
+import {
+  getAdminApplications,
+  getAdminHostels,
+  getApplicationById,
+  updateApplicationStatus,
+  deleteApplication,
+} from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import ApplicationDetailModal from '../components/ApplicationDetailModal';
 import { FaFilter, FaEye, FaTrash } from 'react-icons/fa';
 import './AdminApplications.css';
 
 const AdminApplications = () => {
-  const { token } = useContext(AuthContext);
   const [applications, setApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [hostels, setHostels] = useState([]);
@@ -27,14 +31,10 @@ const AdminApplications = () => {
   }, [filters, applications]);
 
   const fetchData = async () => {
-    const [appsData, hostelsRes] = await Promise.all([
+    const [appsData, hostelsData] = await Promise.all([
       getAdminApplications(),
-      fetch('http://localhost:5000/api/hostels/admin/my-hostels', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      getAdminHostels(),
     ]);
-    
-    const hostelsData = await hostelsRes.json();
     setApplications(appsData);
     setHostels(hostelsData);
     setFilteredApplications(appsData);
@@ -62,14 +62,11 @@ const AdminApplications = () => {
   };
 
   const handleViewDetails = async (appId) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/applications/${appId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await response.json();
+    const data = await getApplicationById(appId);
+    if (data) {
       setSelectedApplication(data);
-    } catch (error) {
-      console.error('Error fetching application details:', error);
+    } else {
+      alert('Could not load application details. Is the backend running?');
     }
   };
 

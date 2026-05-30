@@ -9,6 +9,15 @@ const connectDB = async () => {
     );
     isDbConnected = true;
     console.log('MongoDB connected successfully');
+
+    mongoose.connection.on('disconnected', () => {
+      isDbConnected = false;
+      console.warn('MongoDB disconnected');
+    });
+    mongoose.connection.on('connected', () => {
+      isDbConnected = true;
+    });
+
     return true;
   } catch (error) {
     isDbConnected = false;
