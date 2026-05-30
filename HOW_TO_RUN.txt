@@ -1,0 +1,37 @@
+HOSTELHUB - HOW TO RUN (Windows CMD)
+
+EASIEST WAY:
+  Double-click:  start.bat
+  (in the HostelHub-main folder)
+
+OR in Command Prompt:
+  cd path\to\HostelHub-main
+  start.bat
+
+IMPORTANT:
+  - Use http://localhost:5173  (Vite dev server)
+  - Do NOT double-click fronted\index.html  -> blank white page
+  - Keep BOTH terminal windows open (backend + frontend)
+
+MANUAL WAY (two separate CMD windows):
+
+  Window 1 - Backend:
+    cd backend
+    npm install
+    npm run dev
+    (wait for "MongoDB connected successfully")
+
+  Window 2 - Frontend:
+    cd fronted
+    npm install
+    npm run dev
+    (open http://localhost:5173)
+
+MongoDB:
+  backend\.env must have your real Atlas MONGODB_URI
+  (Database Access username + password, not Atlas website login)
+
+If page is still blank:
+  1. Press F12 in browser -> Console tab -> read red errors
+  2. Confirm backend shows "MongoDB connected successfully"
+  3. Try Ctrl+Shift+R to hard refresh

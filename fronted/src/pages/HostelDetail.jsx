@@ -1,12 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaRupeeSign, FaUsers, FaCheckCircle, FaTimes } from 'react-icons/fa';
-import { getHostelById, createApplication } from '../services/api';
+import { getHostelById, createApplication, getStudentApplications } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import './HostelDetail.css';
 
 const HostelDetail = () => {
   const [hostel, setHostel] = useState(null);
+  const [loadError, setLoadError] = useState('');
+  const [pageLoading, setPageLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState(0);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
@@ -50,22 +52,29 @@ const HostelDetail = () => {
   }, [id, user]);
 
   const fetchData = async () => {
-    const hostelData = await getHostelById(id);
-    setHostel(hostelData);
-    
-    // Check if student has already applied
-    if (user && user.role === 'student') {
-      try {
-        const response = await fetch(`http://localhost:5000/api/applications/student/my-applications`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const applications = await response.json();
-        const existingApp = applications.find(app => app.hostelId._id === id);
-        setExistingApplication(existingApp || null);
-      } catch (error) {
-        console.error('Error checking application:', error);
-      }
+    setPageLoading(true);
+    setLoadError('');
+
+    const result = await getHostelById(id);
+
+    if (result.error || !result.hostel) {
+      setHostel(null);
+      setLoadError(result.error || 'Hostel not found');
+      setPageLoading(false);
+      return;
     }
+
+    setHostel(result.hostel);
+
+    if (user?.role === 'student') {
+      const applications = await getStudentApplications();
+      const existingApp = applications.find(
+        (app) => app.hostelId?._id === id || app.hostelId === id
+      );
+      setExistingApplication(existingApp || null);
+    }
+
+    setPageLoading(false);
   };
 
   const handleShowForm = () => {
@@ -144,7 +153,22 @@ const HostelDetail = () => {
     }
   };
 
-  if (!hostel) return <div className="loading">Loading...</div>;
+  if (pageLoading) {
+    return <div className="loading">Loading hostel details…</div>;
+  }
+
+  if (loadError || !hostel) {
+    return (
+      <div className="hostel-detail-container">
+        <div className="empty-state">
+          <p>{loadError || 'Hostel not found'}</p>
+          <button type="button" className="apply-button" onClick={() => navigate('/hostels')}>
+            Back to hostels
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="hostel-detail-container">

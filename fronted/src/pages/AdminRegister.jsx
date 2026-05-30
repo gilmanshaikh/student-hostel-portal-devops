@@ -8,22 +8,30 @@ const AdminRegister = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
   });
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    const result = await adminRegister(formData);
-    if (result.token) {
-      login(result.user, result.token);
-      navigate('/admin/dashboard');
-    } else {
-      setError(result.message || 'Registration failed');
+    setSubmitting(true);
+
+    try {
+      const result = await adminRegister(formData);
+      if (result.token) {
+        login(result.user, result.token);
+        navigate('/admin/dashboard');
+      } else {
+        setError(result.message || 'Registration failed');
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -37,27 +45,34 @@ const AdminRegister = () => {
             type="text"
             placeholder="Name"
             value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
+            disabled={submitting}
           />
           <input
             type="email"
             placeholder="Email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
+            disabled={submitting}
           />
           <input
             type="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
+            minLength={6}
+            disabled={submitting}
           />
-          <button type="submit">Register</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? 'Registering…' : 'Register'}
+          </button>
         </form>
         <p className="auth-link">
-          Already have an account? <span onClick={() => navigate('/admin/login')}>Login</span>
+          Already have an account?{' '}
+          <span onClick={() => navigate('/admin/login')}>Login</span>
         </p>
       </div>
     </div>

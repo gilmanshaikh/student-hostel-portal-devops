@@ -35,7 +35,7 @@ const AuthSelect = () => {
             </div>
             <h3>Student</h3>
             <p>Find and apply for hostels</p>
-            <button className="role-btn">
+            <button type="button" className="role-btn">
               {mode === 'login' ? 'Login as Student' : 'Sign Up as Student'}
             </button>
           </div>
@@ -46,7 +46,7 @@ const AuthSelect = () => {
             </div>
             <h3>Hostel Owner</h3>
             <p>Manage hostels and applications</p>
-            <button className="role-btn">
+            <button type="button" className="role-btn">
               {mode === 'login' ? 'Login as Owner' : 'Sign Up as Owner'}
             </button>
           </div>

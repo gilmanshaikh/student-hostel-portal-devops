@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import connectDB from './config/db.js';
+import mongoose from 'mongoose';
+import connectDB, { isDbConnected } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import hostelRoutes from './routes/hostelRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
@@ -10,23 +11,41 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-connectDB();
+app.use('/api', (req, res, next) => {
+  if (isDbConnected && mongoose.connection.readyState === 1) {
+    return next();
+  }
+  return res.status(503).json({
+    message:
+      'Database not connected. Check MONGODB_URI in backend/.env and restart the backend.',
+  });
+});
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/hostels', hostelRoutes);
 app.use('/api/applications', applicationRoutes);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Hostel Portal API' });
+  res.json({
+    message: 'Hostel Portal API',
+    database: isDbConnected ? 'connected' : 'disconnected',
+  });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    if (!isDbConnected) {
+      console.warn('API routes will return errors until MongoDB connects.');
+    }
+  });
+};
+
+startServer();

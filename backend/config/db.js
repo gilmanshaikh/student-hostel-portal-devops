@@ -1,15 +1,22 @@
 import mongoose from 'mongoose';
 
+export let isDbConnected = false;
+
 const connectDB = async () => {
   try {
-    // Added the fallback string here using || 
-    await mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/hostelhub");
+    await mongoose.connect(
+      process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/hostelhub'
+    );
+    isDbConnected = true;
     console.log('MongoDB connected successfully');
+    return true;
   } catch (error) {
+    isDbConnected = false;
     console.error('MongoDB connection error:', error.message);
     console.warn(
-      'Start MongoDB locally or set MONGODB_URI in backend/.env (e.g. MongoDB Atlas).'
+      'Set MONGODB_URI in backend/.env (MongoDB Atlas) and restart the backend.'
     );
+    return false;
   }
 };
 

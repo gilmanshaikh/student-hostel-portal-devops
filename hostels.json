@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Elite Boys Residency",
+    "type": "Boys",
+    "location": "Badlapur East, Near Station",
+    "totalRooms": 20,
+    "availableRooms": 5,
+    "rentPerMonth": 4500,
+    "amenities": ["Wi-Fi", "CCTV", "Water Purifier", "Laundromat"],
+    "contactNumber": "+91 98765 43210"
+  },
+  {
+    "name": "Saraswati Girls Hostel",
+    "type": "Girls",
+    "location": "Katrap, Badlapur",
+    "totalRooms": 15,
+    "availableRooms": 3,
+    "rentPerMonth": 5000,
+    "amenities": ["24/7 Security", "Wi-Fi", "Mess Facility", "Power Backup"],
+    "contactNumber": "+91 98765 43211"
+  },
+  {
+    "name": "Metro Premium Living",
+    "type": "Co-Ed",
+    "location": "Belavali, Badlapur West",
+    "totalRooms": 30,
+    "availableRooms": 12,
+    "rentPerMonth": 6000,
+    "amenities": ["AC Rooms", "Gym Access", "Wi-Fi", "Housekeeping"],
+    "contactNumber": "+91 98765 43212"
+  }
+]

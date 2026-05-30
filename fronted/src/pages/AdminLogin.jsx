@@ -10,14 +10,18 @@ const AdminLogin = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+    setSubmitting(true);
+
     const result = await adminLogin(formData);
+    setSubmitting(false);
+
     if (result.token) {
       login(result.user, result.token);
       navigate('/admin/dashboard');
@@ -46,7 +50,9 @@ const AdminLogin = () => {
             onChange={(e) => setFormData({...formData, password: e.target.value})}
             required
           />
-          <button type="submit">Login</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? 'Logging in…' : 'Login'}
+          </button>
         </form>
         <p className="auth-link">
           Don't have an account? <span onClick={() => navigate('/admin/register')}>Register</span>

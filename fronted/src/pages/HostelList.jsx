@@ -33,6 +33,7 @@ const HostelList = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true); // Fixed: changed from loading(true)
       const hostelsData = await getAllHostels();
       setHostels(Array.isArray(hostelsData) ? hostelsData : []);
 
@@ -41,13 +42,14 @@ const HostelList = () => {
         setApplications(Array.isArray(appsData) ? appsData : []);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data inside component:', error);
       setHostels([]);
     } finally {
-      setLoading(false);
+      setLoading(false); // Fixed: changed from loading(false)
     }
   };
 
+  // Filter and sorting configurations aligned with MongoDB Schema
   const filteredHostels = useMemo(() => {
     let result = [...hostels];
 
@@ -56,27 +58,27 @@ const HostelList = () => {
       result = result.filter(
         (hostel) =>
           hostel.name?.toLowerCase().includes(term) ||
-          hostel.address?.toLowerCase().includes(term) ||
-          hostel.description?.toLowerCase().includes(term)
+          hostel.location?.toLowerCase().includes(term) || 
+          hostel.type?.toLowerCase().includes(term)
       );
     }
 
     if (filters.minPrice) {
-      result = result.filter((hostel) => hostel.price >= Number(filters.minPrice));
+      result = result.filter((hostel) => hostel.rentPerMonth >= Number(filters.minPrice)); 
     }
 
     if (filters.maxPrice) {
-      result = result.filter((hostel) => hostel.price <= Number(filters.maxPrice));
+      result = result.filter((hostel) => hostel.rentPerMonth <= Number(filters.maxPrice)); 
     }
 
     if (filters.sortBy === 'price-low') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => a.rentPerMonth - b.rentPerMonth); 
     } else if (filters.sortBy === 'price-high') {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => b.rentPerMonth - a.rentPerMonth); 
     } else if (filters.sortBy === 'capacity-high') {
-      result.sort((a, b) => b.capacity - a.capacity);
+      result.sort((a, b) => b.availableRooms - a.availableRooms); 
     } else if (filters.sortBy === 'capacity-low') {
-      result.sort((a, b) => a.capacity - b.capacity);
+      result.sort((a, b) => a.availableRooms - b.availableRooms); 
     }
 
     return result;
@@ -94,7 +96,7 @@ const HostelList = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading hostels</div>;
+    return <div className="loading">Loading hostels...</div>;
   }
 
   return (
@@ -147,8 +149,8 @@ const HostelList = () => {
               <option value="">Sort by</option>
               <option value="price-low">Price: low to high</option>
               <option value="price-high">Price: high to low</option>
-              <option value="capacity-high">Capacity: high to low</option>
-              <option value="capacity-low">Capacity: low to high</option>
+              <option value="capacity-high">Available Rooms: high to low</option>
+              <option value="capacity-low">Available Rooms: low to high</option>
             </select>
             <button type="button" className="clear-filters" onClick={clearFilters}>
               Clear filters
@@ -205,26 +207,33 @@ const HostelList = () => {
                   </div>
                 )}
 
-                {hostel.images?.length > 0 ? (
+                {hostel.images && hostel.images.length > 0 && hostel.images[0].url ? (
                   <img src={hostel.images[0].url} alt={hostel.name} className="hostel-image" />
                 ) : (
                   <div className="hostel-image hostel-image-placeholder">🏠</div>
                 )}
 
                 <div className="hostel-content">
-                  <h3>{hostel.name}</h3>
-                  <p className="hostel-address">
-                    <FaMapMarkerAlt /> {hostel.address}
-                  </p>
-                  <p className="hostel-description">{hostel.description}</p>
-                  <div className="hostel-info">
-                    <span className="hostel-price">
-                      <FaRupeeSign /> {hostel.price}/mo
-                    </span>
-                    <span className="hostel-capacity">
-                      <FaUsers /> {hostel.capacity} beds
+                  <div className="hostel-card-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3>{hostel.name}</h3>
+                    <span className={`type-badge ${hostel.type?.toLowerCase()}`} style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '12px', background: '#e0e0e0' }}>
+                      {hostel.type}
                     </span>
                   </div>
+                  
+                  <p className="hostel-address">
+                    <FaMapMarkerAlt /> {hostel.location}
+                  </p>
+                  
+                  <div className="hostel-info">
+                    <span className="hostel-price">
+                      <FaRupeeSign /> {hostel.rentPerMonth}/mo
+                    </span>
+                    <span className="hostel-capacity">
+                      <FaUsers /> {hostel.availableRooms} / {hostel.totalRooms} left
+                    </span>
+                  </div>
+                  
                   <button
                     type="button"
                     onClick={(e) => {

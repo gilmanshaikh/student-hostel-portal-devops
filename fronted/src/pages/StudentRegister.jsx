@@ -9,22 +9,30 @@ const StudentRegister = () => {
     name: '',
     email: '',
     password: '',
-    phone: ''
+    phone: '',
   });
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    const result = await studentRegister(formData);
-    if (result.token) {
-      login(result.user, result.token);
-      navigate('/hostels');
-    } else {
-      setError(result.message || 'Registration failed');
+    setSubmitting(true);
+
+    try {
+      const result = await studentRegister(formData);
+      if (result.token) {
+        login(result.user, result.token);
+        navigate('/hostels');
+      } else {
+        setError(result.message || 'Registration failed');
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -38,34 +46,42 @@ const StudentRegister = () => {
             type="text"
             placeholder="Name"
             value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
+            disabled={submitting}
           />
           <input
             type="email"
             placeholder="Email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
+            disabled={submitting}
           />
           <input
             type="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
+            minLength={6}
+            disabled={submitting}
           />
           <input
             type="tel"
             placeholder="Phone"
             value={formData.phone}
-            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
+            disabled={submitting}
           />
-          <button type="submit">Register</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? 'Registering…' : 'Register'}
+          </button>
         </form>
         <p className="auth-link">
-          Already have an account? <span onClick={() => navigate('/student/login')}>Login</span>
+          Already have an account?{' '}
+          <span onClick={() => navigate('/student/login')}>Login</span>
         </p>
       </div>
     </div>
