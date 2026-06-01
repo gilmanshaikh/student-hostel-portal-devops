@@ -24,7 +24,7 @@ const QUOTES = [
   },
   {
     text: 'As a hostel owner, managing applications from one dashboard saved us hours every week.',
-    author: 'Rahul M., Hostel Admin',
+    author: 'pratik bhopi, Hostel Admin',
   },
   {
     text: 'Clean interface, clear pricing, and I could track my application status easily.',
