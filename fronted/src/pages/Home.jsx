@@ -20,7 +20,7 @@ const MARQUEE_ITEMS = [
 const QUOTES = [
   {
     text: 'Found my hostel in one afternoon. The application flow is straightforward.',
-    author: 'Priya S., Engineering Student',
+    author: 'gilman shaikh, Engineering Student',
   },
   {
     text: 'As a hostel owner, managing applications from one dashboard saved us hours every week.',
