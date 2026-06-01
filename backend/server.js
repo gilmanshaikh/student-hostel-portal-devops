@@ -14,6 +14,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// --- HEALTH CHECK ROUTE ---
+// Placed before DB middleware so the container shows as 'healthy'
+// even if the database connection is still initializing.
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// --- DATABASE MIDDLEWARE ---
 app.use('/api', (req, res, next) => {
   if (isDbConnected && mongoose.connection.readyState === 1) {
     return next();
@@ -24,10 +32,12 @@ app.use('/api', (req, res, next) => {
   });
 });
 
+// --- API ROUTES ---
 app.use('/api/auth', authRoutes);
 app.use('/api/hostels', hostelRoutes);
 app.use('/api/applications', applicationRoutes);
 
+// --- BASE ROUTE ---
 app.get('/', (req, res) => {
   res.json({
     message: 'Hostel Portal API',
@@ -35,7 +45,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Unknown API routes — return JSON (not HTML "Cannot GET")
+// --- UNKNOWN API ROUTES ---
 app.use('/api', (req, res) => {
   res.status(404).json({
     message: `API route not found: ${req.method} ${req.originalUrl}`,
@@ -45,14 +55,18 @@ app.use('/api', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
-  await connectDB();
-
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    if (!isDbConnected) {
-      console.warn('API routes will return errors until MongoDB connects.');
-    }
-  });
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      if (!isDbConnected) {
+        console.warn('API routes will return errors until MongoDB connects.');
+      }
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
 };
 
 startServer();

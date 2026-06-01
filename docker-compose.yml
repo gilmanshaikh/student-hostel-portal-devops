@@ -2,33 +2,17 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
       - "5000:5000"
-    environment:
-      - PORT=5000
-      - MONGODB_URI=mongodb://mongodb:27017/hostel-portal
-      - JWT_SECRET=your_devops_secret_key_12345
-    depends_on:
-      - mongodb
+    env_file:
+      - ./backend/.env
+    restart: always
 
   frontend:
-    build:
-      context: ./fronted
-      dockerfile: Dockerfile
+    build: ./frontend
     ports:
-      - "5174:80" # Maps local port 5174 to container Nginx port 80
+      - "8080:80"
     depends_on:
       - backend
-
-  mongodb:
-    image: mongo:6.0
-    ports:
-      - "27018:27017"
-    volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
+    restart: always

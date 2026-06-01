@@ -3,38 +3,50 @@ title HostelHub
 cd /d "%~dp0"
 
 echo.
-echo  HostelHub - Starting backend + frontend...
+echo  ============================================
+echo    HostelHub - Starting...
+echo  ============================================
 echo.
 
-if not exist "backend\node_modules\" (
-  echo Installing backend...
-  pushd backend && call npm install && popd
+where node >nul 2>&1
+if errorlevel 1 (
+  echo  ERROR: Node.js is not installed.
+  echo  Install from https://nodejs.org/ then run this file again.
+  echo.
+  pause
+  exit /b 1
 )
 
-if not exist "fronted\node_modules\" (
-  echo Installing frontend...
-  pushd fronted && call npm install && popd
+if not exist "backend\.env" (
+  echo  Creating backend\.env from example...
+  copy /Y "backend\.env.example" "backend\.env" >nul 2>&1
+  echo  IMPORTANT: Edit backend\.env and set your MongoDB Atlas MONGODB_URI
+  echo.
 )
 
-echo Starting BACKEND on http://localhost:5000 ...
-start "HostelHub Backend" cmd /k "cd /d "%~dp0backend" && npm run dev"
+if not exist "fronted\.env" (
+  echo  VITE_API_URL=http://localhost:5000/api> "fronted\.env"
+)
 
-echo Waiting for backend...
-timeout /t 5 /nobreak >nul
-
-echo Starting FRONTEND on http://localhost:5173 ...
-start "HostelHub Frontend" cmd /k "cd /d "%~dp0fronted" && npm run dev"
-
-echo Waiting for frontend...
-timeout /t 6 /nobreak >nul
-
-start http://localhost:5173
+echo  Installing dependencies (first time may take 2-3 minutes)...
+call npm run setup
+if errorlevel 1 (
+  echo.
+  echo  Setup failed. Check your internet connection and try again.
+  pause
+  exit /b 1
+)
 
 echo.
-echo  Website:  http://localhost:5173
-echo  API:      http://localhost:5000
+echo  Starting backend (port 5000) + frontend (port 5173)...
+echo  Open in browser: http://localhost:5173
 echo.
-echo  Keep BOTH terminal windows open.
-echo  If you see "Connection failed", backend or frontend is not running.
+echo  Press Ctrl+C in this window to stop.
+echo  ============================================
 echo.
+
+start "" cmd /c "timeout /t 8 /nobreak >nul && start http://localhost:5173"
+
+call npm start
+
 pause

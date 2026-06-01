@@ -1,13 +1,7 @@
-// Direct backend URL (works when backend runs on 5000; backend has CORS enabled)
-const BACKEND_API = 'http://localhost:5000/api';
-const PROXY_API = '/api';
-
-const configured = import.meta.env.VITE_API_URL?.trim();
-export const API_URL =
-  configured && configured !== '/api' ? configured : BACKEND_API;
+export const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
 
 const NETWORK_ERROR =
-  'Connection failed. Start both servers with start.bat (backend port 5000 + frontend port 5173).';
+  'Connection failed — run start.bat and keep the terminal open. Backend must show "MongoDB connected".';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
@@ -25,42 +19,30 @@ const parseJson = async (response) => {
   }
 };
 
-const request = async (path, options = {}, bases = [API_URL, PROXY_API, BACKEND_API]) => {
-  const uniqueBases = [...new Set(bases)];
-  let lastError = NETWORK_ERROR;
-
-  for (const base of uniqueBases) {
-    const url = `${base.replace(/\/$/, '')}${path}`;
-    try {
-      const response = await fetch(url, options);
-      const data = await parseJson(response);
-      return { ok: response.ok, data, status: response.status };
-    } catch {
-      lastError = NETWORK_ERROR;
-    }
+const request = async (path, options = {}) => {
+  try {
+    const response = await fetch(`${API_URL}${path}`, options);
+    const data = await parseJson(response);
+    return { ok: response.ok, data, status: response.status };
+  } catch {
+    return { ok: false, data: { message: NETWORK_ERROR }, status: 0 };
   }
-
-  return { ok: false, data: { message: lastError }, status: 0 };
 };
 
 const uploadRequest = async (path, formData, method = 'POST') => {
   const token = localStorage.getItem('token');
-  const headers = { ...(token && { Authorization: `Bearer ${token}` }) };
-  const uniqueBases = [...new Set([API_URL, PROXY_API, BACKEND_API])];
-
-  for (const base of uniqueBases) {
-    const url = `${base.replace(/\/$/, '')}${path}`;
-    try {
-      const response = await fetch(url, { method, headers, body: formData });
-      return parseJson(response);
-    } catch {
-      /* try next base */
-    }
+  try {
+    const response = await fetch(`${API_URL}${path}`, {
+      method,
+      headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+      body: formData,
+    });
+    return parseJson(response);
+  } catch {
+    return { message: NETWORK_ERROR };
   }
-  return { message: NETWORK_ERROR };
 };
 
-// Auth APIs
 export const studentRegister = async (body) => {
   const { ok, data } = await request('/auth/student/register', {
     method: 'POST',
@@ -101,7 +83,6 @@ export const adminLogin = async (body) => {
   return data;
 };
 
-// Hostel APIs
 export const getAllHostels = async () => {
   const { ok, data } = await request('/hostels');
   if (!ok || !Array.isArray(data)) return [];
@@ -110,51 +91,36 @@ export const getAllHostels = async () => {
 
 export const getHostelById = async (id) => {
   const { ok, data } = await request(`/hostels/${id}`);
-  if (!ok || !data?._id) {
-    return { error: data?.message || 'Hostel not found' };
-  }
+  if (!ok || !data?._id) return { error: data?.message || 'Hostel not found' };
   return { hostel: data };
 };
 
-export const createHostel = async (formData) => {
-  return uploadRequest('/hostels', formData, 'POST');
-};
+export const createHostel = async (formData) => uploadRequest('/hostels', formData, 'POST');
 
 export const getAdminHostels = async () => {
-  const { ok, data } = await request('/hostels/admin/my-hostels', {
-    headers: getAuthHeaders(),
-  });
+  const { ok, data } = await request('/hostels/admin/my-hostels', { headers: getAuthHeaders() });
   if (!ok || !Array.isArray(data)) return [];
   return data;
 };
 
 export const deleteHostel = async (id) => {
-  const { ok, data } = await request(`/hostels/${id}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
+  const { ok, data } = await request(`/hostels/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
   return { ok, data };
 };
 
 export const updateHostel = async (id, formData) => {
   const token = localStorage.getItem('token');
-  const headers = { ...(token && { Authorization: `Bearer ${token}` }) };
-  const uniqueBases = [...new Set([API_URL, PROXY_API, BACKEND_API])];
-
-  for (const base of uniqueBases) {
-    try {
-      const response = await fetch(`${base.replace(/\/$/, '')}/hostels/${id}`, {
-        method: 'PUT',
-        headers,
-        body: formData,
-      });
-      const data = await parseJson(response);
-      return { ok: response.ok, data };
-    } catch {
-      /* try next */
-    }
+  try {
+    const response = await fetch(`${API_URL}/hostels/${id}`, {
+      method: 'PUT',
+      headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+      body: formData,
+    });
+    const data = await parseJson(response);
+    return { ok: response.ok, data };
+  } catch {
+    return { ok: false, data: { message: NETWORK_ERROR } };
   }
-  return { ok: false, data: { message: NETWORK_ERROR } };
 };
 
 export const deleteHostelImage = async (id, publicId) => {
@@ -166,7 +132,6 @@ export const deleteHostelImage = async (id, publicId) => {
   return { ok, data };
 };
 
-// Application APIs
 export const createApplication = async (applicationData) => {
   const { data } = await request('/applications', {
     method: 'POST',
@@ -193,9 +158,7 @@ export const getAdminApplications = async () => {
 };
 
 export const getApplicationById = async (id) => {
-  const { ok, data } = await request(`/applications/${id}`, {
-    headers: getAuthHeaders(),
-  });
+  const { ok, data } = await request(`/applications/${id}`, { headers: getAuthHeaders() });
   if (!ok || !data?._id) return null;
   return data;
 };
@@ -210,18 +173,12 @@ export const updateApplicationStatus = async (id, status) => {
 };
 
 export const deleteApplication = async (id) => {
-  const { data } = await request(`/applications/${id}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
+  const { data } = await request(`/applications/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
   return data;
 };
 
-// Profile APIs
 export const getStudentProfile = async () => {
-  const { data } = await request('/auth/student/profile', {
-    headers: getAuthHeaders(),
-  });
+  const { data } = await request('/auth/student/profile', { headers: getAuthHeaders() });
   return data;
 };
 
@@ -235,9 +192,7 @@ export const updateStudentProfile = async (body) => {
 };
 
 export const getAdminProfile = async () => {
-  const { data } = await request('/auth/admin/profile', {
-    headers: getAuthHeaders(),
-  });
+  const { data } = await request('/auth/admin/profile', { headers: getAuthHeaders() });
   return data;
 };
 

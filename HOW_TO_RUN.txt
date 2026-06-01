@@ -1,37 +1,25 @@
-HOSTELHUB - HOW TO RUN (Windows CMD)
+HOSTELHUB - HOW TO RUN (Windows)
 
-EASIEST WAY:
-  Double-click:  start.bat
-  (in the HostelHub-main folder)
+>>> DOUBLE-CLICK:  start.bat   (or RUN.bat)
 
-OR in Command Prompt:
-  cd path\to\HostelHub-main
-  start.bat
+Wait until you see:
+  [BE] MongoDB connected successfully
+  [BE] Server running on port 5000
+  [FE] Local: http://localhost:5173/
 
-IMPORTANT:
-  - Use http://localhost:5173  (Vite dev server)
-  - Do NOT double-click fronted\index.html  -> blank white page
-  - Keep BOTH terminal windows open (backend + frontend)
+Browser opens automatically to http://localhost:5173
 
-MANUAL WAY (two separate CMD windows):
+REQUIREMENTS:
+  - Node.js installed (https://nodejs.org/)
+  - Internet (for MongoDB Atlas)
+  - backend\.env must have your real MONGODB_URI from MongoDB Atlas
 
-  Window 1 - Backend:
-    cd backend
-    npm install
-    npm run dev
-    (wait for "MongoDB connected successfully")
+DO NOT:
+  - Open index.html directly (white / broken page)
+  - Close the terminal while using the app
+  - Use http://localhost:5000 as the website (that is API only)
 
-  Window 2 - Frontend:
-    cd fronted
-    npm install
-    npm run dev
-    (open http://localhost:5173)
-
-MongoDB:
-  backend\.env must have your real Atlas MONGODB_URI
-  (Database Access username + password, not Atlas website login)
-
-If page is still blank:
-  1. Press F12 in browser -> Console tab -> read red errors
-  2. Confirm backend shows "MongoDB connected successfully"
-  3. Try Ctrl+Shift+R to hard refresh
+TROUBLESHOOTING:
+  "Connection failed" = terminal closed or backend not started
+  "Database not connected" = fix MONGODB_URI in backend\.env
+  Port in use = close other HostelHub windows and run start.bat again
