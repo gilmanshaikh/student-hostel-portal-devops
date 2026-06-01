@@ -10,7 +10,7 @@ services:
     restart: always
 
   frontend:
-    build: ./frontend
+    build: ./fronted
     ports:
       - "8080:80"
     depends_on:

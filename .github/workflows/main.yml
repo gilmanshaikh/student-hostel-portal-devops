@@ -19,16 +19,13 @@ jobs:
           node-version: 20
 
       - name: Install Frontend Dependencies
-        run: |
-          cd fronted
-          npm install
+        working-directory: fronted
+        run: npm install
 
       - name: Build Frontend
-        run: |
-          cd fronted
-          npm run build
+        working-directory: fronted
+        run: npm run build
 
       - name: Install Backend Dependencies
-        run: |
-          cd backend
-          npm install
+        working-directory: backend
+        run: npm install
